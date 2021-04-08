@@ -196,9 +196,11 @@ class HttpResponseBase:
             self.cookies[key]['secure'] = True
         if httponly:
             self.cookies[key]['httponly'] = True
+        # Based on https://code.djangoproject.com/ticket/30862
+        # and https://github.com/django/django/commit/b33bfc383935cd26e19a2cf71d066ac6edd1425f
         if samesite:
-            if samesite.lower() not in ('lax', 'strict'):
-                raise ValueError('samesite must be "lax" or "strict".')
+            if samesite.lower() not in ('lax', 'none', 'strict'):
+                raise ValueError('samesite must be "lax", "none", or "strict".')
             self.cookies[key]['samesite'] = samesite
 
     def setdefault(self, key, value):
